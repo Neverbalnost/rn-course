@@ -13,12 +13,12 @@ export default commonStyles = StyleSheet.create({
         marginBottom: 20
     },
     h1: {
-        color: '#0c739b',
+        color: '#008ACE',
         fontSize: 50,
         textAlign: 'center'
     },
     h2: {
-        color: '#0c739b',
+        color: '#008ACE',
         fontSize: 30,
         textAlign: 'center'
     },
@@ -28,7 +28,7 @@ export default commonStyles = StyleSheet.create({
         marginVertical: 5
     },
     button: {
-        backgroundColor: '#0c739b',
+        backgroundColor: '#008ACE',
         padding: 5,
         marginVertical: 10,
     },

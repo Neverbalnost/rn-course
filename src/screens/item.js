@@ -15,7 +15,7 @@ class Item extends React.Component {
         return (
             <View style={itemStyles.itemView}>
                 <View style={itemStyles.header}>
-                    <Icon style={itemStyles.icon} name={item.icon} size={60} color="#0c739b"/>
+                    <Icon style={itemStyles.icon} name={item.icon} size={60} color="#008ACE"/>
                     <Text style={[commonStyles.text, commonStyles.h1]}>{item.name}</Text>
                 </View>
                 <View style={itemStyles.paragraph}>

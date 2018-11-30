@@ -32,7 +32,7 @@ class List extends React.Component {
     renderItem = ({item}) => {
         return (
             <View style={listStyles.item}>
-                <Icon style={listStyles.icon} name={item.icon} size={30} color="#0c739b"/>
+                <Icon style={listStyles.icon} name={item.icon} size={30} color="#008ACE"/>
                 <Text style={commonStyles.text}>{item.name}</Text>
                 <TouchableOpacity style={listStyles.link} onPress={() => this.onPressItem({item})}>
                     <Icon name='chevron-circle-right' size={30} color="#333"/>
