@@ -40,5 +40,10 @@ export default commonStyles = StyleSheet.create({
         fontSize: 30,
         textAlign: 'center',
         color: '#fff'
+    },
+    error: {
+        color: '#D35D47',
+        textAlign: 'center',
+        paddingVertical: 5
     }
 });
