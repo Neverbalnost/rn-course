@@ -7,14 +7,14 @@ import itemStyles from '../styles/screens/itemStyles';
 class Item extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         title: navigation.state.params.title,
+        headerLeft: (
+            <TouchableOpacity
+                style={itemStyles.backButtonIcon}
+                onPress={() => navigation.navigate('List')}>
+                <Icon name={'chevron-circle-left'} size={30} color={'#008ACE'}/>
+            </TouchableOpacity>
+        )
     });
-    constructor(props) {
-        super(props);
-        const itemName  = this.props.navigation.getParam('item').name;
-        this.props.navigation.setParams({
-            title: itemName
-        });
-    }
     render() {
         const { navigation } = this.props;
         const item  = navigation.getParam('item');

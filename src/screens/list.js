@@ -42,7 +42,7 @@ class List extends React.Component {
     };
     onPressItem({item}) {
         const {navigate} = this.props.navigation;
-        navigate('Item', { item });
+        navigate('Item', { item, title: item.name });
     }
 }
 
