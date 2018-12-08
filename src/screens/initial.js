@@ -31,6 +31,7 @@ class Initial extends React.Component {
                     placeholder={'password'}
                     style={commonStyles.input}
                     textContentType={'password'}
+                    secureTextEntry={true}
                     onChangeText={(password) => this.setState({password})}
                 />
                 <Text style={commonStyles.error}>{this.state.errorText}</Text>
@@ -45,10 +46,10 @@ class Initial extends React.Component {
     };
 
     onButtonTap = () => {
+        // this.props.navigation.navigate('List');
         return this.authorize()
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (!responseJson.message) {
                     this.props.navigation.navigate('List');
                 } else {

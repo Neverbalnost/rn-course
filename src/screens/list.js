@@ -16,7 +16,7 @@ class List extends React.Component {
                 <FlatList
                     data={[
                         {key: 'a', name: 'Energy', icon: 'rocket', text: 'Everyone needs their batteries charged to code effectively.'},
-                        {key: 'b', name: 'A brave heart', icon: 'heart', text: 'Legacy code don\'t scare me! (Almost.)'},
+                        {key: 'b', name: 'A brave heart', icon: 'heart', text: 'Legacy code doesn\'t scare me! (Almost.)'},
                         {key: 'c', name: 'Black magic', icon: 'magic', text: 'Sometimes it\'s the only thing that helps.'},
                         {key: 'd', name: 'Green tea', icon: 'coffee', text: 'Delicious! And invigorating!'},
                         {key: 'e', name: 'Precaution', icon: 'fire-extinguisher', text: 'Stay safe and never commit to master.'},
@@ -41,7 +41,6 @@ class List extends React.Component {
         )
     };
     onPressItem({item}) {
-        console.log('It works!');
         const {navigate} = this.props.navigation;
         navigate('Item', { item });
     }

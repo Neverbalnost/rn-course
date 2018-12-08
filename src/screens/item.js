@@ -5,9 +5,16 @@ import commonStyles from '../styles/commonStyles';
 import itemStyles from '../styles/screens/itemStyles';
 
 class Item extends React.Component {
-    static navigationOptions = {
-        title: 'Some Details',
-    };
+    static navigationOptions = ({ navigation }) => ({
+        title: navigation.state.params.title,
+    });
+    constructor(props) {
+        super(props);
+        const itemName  = this.props.navigation.getParam('item').name;
+        this.props.navigation.setParams({
+            title: itemName
+        });
+    }
     render() {
         const { navigation } = this.props;
         const item  = navigation.getParam('item');
