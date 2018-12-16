@@ -1,6 +1,15 @@
 import React from 'react';
-import { Image, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+    Image,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Modal,
+    View
+} from 'react-native';
 import commonStyles from '../styles/commonStyles';
+import LottieView from 'lottie-react-native';
 
 class Initial extends React.Component {
     static navigationOptions = {
@@ -9,12 +18,47 @@ class Initial extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {errorText: ''};
+        this.state = {
+            errorText: '',
+            modalVisible: false
+        };
     }
 
     render() {
         return (
             <ScrollView style={commonStyles.commonView}>
+                <Modal
+                  animationType="slide"
+                  transparent={false}
+                  visible={this.state.modalVisible}
+                  onRequestClose={() => {this.toggleModal(false)}}>
+                  <View style={commonStyles.centeredView}>
+                    <View style={commonStyles.centeredView}>
+                        <Text style={[commonStyles.text, commonStyles.h1]}>Oh no!</Text>
+                        <Text style={[commonStyles.text, commonStyles.h2, commonStyles.textGray]}>Seems that you have some connection issues!</Text>
+                        <LottieView
+                        style={commonStyles.animationContainer}
+                        source={require('../assets/animation/disconnected.json')}
+                        autoPlay
+                        loop
+                        />
+                        <View style={commonStyles.buttonContainer}>
+                            <TouchableOpacity
+                                style={commonStyles.button}
+                                onPress={this.onButtonTap}>
+                                <Text style={[commonStyles.text, commonStyles.buttonText]}>Try again</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[commonStyles.button, commonStyles.buttonRed]}
+                                onPress={() => {
+                                  this.toggleModal(false);
+                                }}>
+                                <Text style={[commonStyles.text, commonStyles.buttonText]}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                  </View>
+                </Modal>
                 <Image
                     style={commonStyles.logo}
                     resizeMode='contain'
@@ -46,16 +90,19 @@ class Initial extends React.Component {
     };
 
     onButtonTap = () => {
-        // this.props.navigation.navigate('List');
-        return this.authorize()
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (!responseJson.message) {
-                    this.props.navigation.navigate('List');
-                } else {
-                    this.setState({errorText: responseJson.message});
-                }
-            })
+        this.props.navigation.navigate('List');
+        // return this.authorize()
+        //     .then((response) => response.json())
+        //     .then((responseJson) => {
+        //         if (!responseJson.message) {
+        //             this.props.navigation.navigate('List');
+        //         } else {
+        //             this.setState({errorText: responseJson.message});
+        //         }
+        //     })
+        //     .catch(() => {
+        //         this.toggleModal(true);
+        //     })
     };
 
     authorize = () => {
@@ -73,6 +120,10 @@ class Initial extends React.Component {
             })
         )
     };
+
+    toggleModal = (value) => {
+        this.setState({modalVisible: value});
+    }
 }
 
 export default Initial;

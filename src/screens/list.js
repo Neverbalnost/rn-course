@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, Text, TouchableOpacity, View, RefreshControl } from 'react-native';
 import commonStyles from '../styles/commonStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import listStyles from '../styles/screens/listStyles';
@@ -8,9 +8,23 @@ class List extends React.Component {
     static navigationOptions = {
         title: 'List of stuff',
     };
+    constructor(props) {
+        super(props);
+        this.state = {
+            refreshing: false,
+            offset: 0
+        };
+    }
     render() {
         return (
-            <ScrollView style={commonStyles.commonView}>
+            <ScrollView style={commonStyles.commonView}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                    />
+                }
+            >
                 <Text style={[commonStyles.text, commonStyles.h1]}>The stuff</Text>
                 <Text style={[commonStyles.text, commonStyles.h2]}>which I need for coding</Text>
                 <FlatList
@@ -43,6 +57,20 @@ class List extends React.Component {
     onPressItem({item}) {
         const {navigate} = this.props.navigation;
         navigate('Item', { item, title: item.name });
+    };
+    onRefresh = () => {
+        this.setState({refreshing: true});
+        this.fetchData()
+             .then((response) => response.json())
+             .then((responseJson) => {
+                 this.setState({refreshing: false});
+                 this.setState({listData: responseJson});
+        })
+    };
+    fetchData = () => {
+        return (
+            fetch('http://ecsc00a02fb3.epam.com/rest/V1/products?searchCriteria[pageSize]=10')
+        )
     }
 }
 

@@ -12,6 +12,12 @@ export default commonStyles = StyleSheet.create({
         marginHorizontal: 20,
         marginBottom: 20
     },
+    centeredView: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     h1: {
         color: '#008ACE',
         fontSize: 50,
@@ -29,17 +35,33 @@ export default commonStyles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#008ACE',
-        padding: 5,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         marginVertical: 10,
+        marginHorizontal: 10
+    },
+    buttonRed: {
+        backgroundColor: '#D35D47'
     },
     text: {
         fontFamily: "VINCHAND",
         fontSize: 20,
     },
+    textGray: {
+        color: "#333"
+    },
     buttonText: {
         fontSize: 30,
         textAlign: 'center',
         color: '#fff'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'nowrap'
+    },
+    animationContainer: {
+        height: 240
     },
     error: {
         color: '#D35D47',
