@@ -9,7 +9,7 @@ export default commonStyles = StyleSheet.create({
     },
     commonView: {
         backgroundColor: '#fff',
-        marginHorizontal: 20,
+        paddingHorizontal: 10,
         marginBottom: 20
     },
     centeredView: {
