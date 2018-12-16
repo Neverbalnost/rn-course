@@ -11,6 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../styles/commonStyles';
 import listStyles from '../styles/screens/listStyles';
+import LottieView from 'lottie-react-native';
 
 class List extends React.Component {
     static navigationOptions = {
@@ -22,14 +23,14 @@ class List extends React.Component {
             refreshing: false,
             limit: 10,
             pageNum: 1,
-            listData: []
+            listData: [],
+            loading: false
         };
     }
     componentWillMount() {
         this.onRefresh();
     }
     render() {
-        const isIOS = Platform.OS === 'ios';
         return (
             <View>
                 <FlatList
@@ -38,15 +39,29 @@ class List extends React.Component {
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     onEndReached={this.onListEnd}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.1}
                     onRefresh={this.onRefresh}
                     refreshing={this.state.refreshing}
                     ListHeaderComponent={this.listHeader}
+                    ListFooterComponent={this.listFooter}
                 />
             </View>
         );
     };
     listHeader = () => <Text style={[commonStyles.text, commonStyles.h1]}>The stuff</Text>
+    listFooter = () => {
+        return (
+            this.state.loading &&
+            <View style={commonStyles.centeredView}>
+                <LottieView
+                    style={listStyles.animationContainer}
+                    source={require('../assets/animation/loader_4.json')}
+                    autoPlay
+                    loop
+                />
+            </View>
+        )
+    }
     renderItem = ({item}) => {
         return (
             <View style={listStyles.item}>
@@ -74,13 +89,14 @@ class List extends React.Component {
     };
     onListEnd = () => {
         const { limit, pageNum, listData, numPages } = this.state;
-        console.log('Curr Page: ', pageNum);
         if (numPages <= pageNum) return;
+        this.setState({loading: true});
         this.fetchData(limit, pageNum + 1)
             .then((responseJson) => {
                 const list = listData.concat(responseJson.items);
                 this.setState({listData: list});
                 this.setState({pageNum: pageNum + 1});
+                this.setState({loading: false});
             });
     };
     keyExtractor = (item, index) => item.id.toString();

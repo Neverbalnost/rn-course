@@ -11,5 +11,8 @@ export default listStyles = StyleSheet.create({
     },
     link: {
         marginLeft: 'auto'
+    },
+    animationContainer: {
+        height: 100,
     }
 });

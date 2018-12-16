@@ -37,10 +37,10 @@ class Initial extends React.Component {
                         <Text style={[commonStyles.text, commonStyles.h1]}>Oh no!</Text>
                         <Text style={[commonStyles.text, commonStyles.h2, commonStyles.textGray]}>Seems that you have some connection issues!</Text>
                         <LottieView
-                        style={commonStyles.animationContainer}
-                        source={require('../assets/animation/disconnected.json')}
-                        autoPlay
-                        loop
+                            style={commonStyles.animationContainer}
+                            source={require('../assets/animation/disconnected.json')}
+                            autoPlay
+                            loop
                         />
                         <View style={commonStyles.buttonContainer}>
                             <TouchableOpacity
