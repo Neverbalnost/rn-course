@@ -67,5 +67,8 @@ export default commonStyles = StyleSheet.create({
         color: '#D35D47',
         textAlign: 'center',
         paddingVertical: 5
+    },
+    backButtonIcon: {
+        marginLeft: 20
     }
 });

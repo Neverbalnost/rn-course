@@ -55,8 +55,6 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>VINCHAND.otf</string>
-		<string>VINCHAND.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>

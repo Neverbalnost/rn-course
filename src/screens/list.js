@@ -24,7 +24,7 @@ class List extends React.Component {
             limit: 10,
             pageNum: 1,
             listData: [],
-            loading: false
+            loading: true
         };
     }
     componentWillMount() {
@@ -79,28 +79,29 @@ class List extends React.Component {
     };
     onRefresh = () => {
         const { limit } = this.state;
-        this.setState({refreshing: true});
+        this.setState({pageNum: 1});
         this.fetchData(limit, 1)
             .then((responseJson) => {
-                this.setState({refreshing: false});
+                this.setState({loading: false});
                 this.setState({listData: responseJson.items});
                 this.setState({numPages: Math.ceil(responseJson.total_count / limit)});
             });
     };
     onListEnd = () => {
         const { limit, pageNum, listData, numPages } = this.state;
-        if (numPages <= pageNum) return;
-        this.setState({loading: true});
+        if (numPages == pageNum) return;
         this.fetchData(limit, pageNum + 1)
             .then((responseJson) => {
                 const list = listData.concat(responseJson.items);
+                this.setState({loading: false});
                 this.setState({listData: list});
                 this.setState({pageNum: pageNum + 1});
-                this.setState({loading: false});
             });
+
     };
     keyExtractor = (item, index) => item.id.toString();
     fetchData = (limit, pageNum) => {
+        this.setState({loading: true});
         return (
             fetch(`http://ecsc00a02fb3.epam.com/rest/V1/products?searchCriteria[pageSize]=${limit}&searchCriteria[currentPage]=${pageNum}`)
             .then((response) => response.json())

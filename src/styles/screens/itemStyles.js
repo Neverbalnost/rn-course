@@ -25,8 +25,5 @@ export default listStyles = StyleSheet.create({
     },
     text: {
         fontSize: 30
-    },
-    backButtonIcon: {
-        marginLeft: 20
     }
 });

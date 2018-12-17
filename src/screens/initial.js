@@ -20,7 +20,9 @@ class Initial extends React.Component {
         super(props);
         this.state = {
             errorText: '',
-            modalVisible: false
+            modalVisible: false,
+            username: 'elena_kogodeeva@epam.com',
+            password: 'PinkUnicorn99'
         };
     }
 
@@ -69,6 +71,7 @@ class Initial extends React.Component {
                     placeholder={'e-mail'}
                     style={commonStyles.input}
                     textContentType={'username'}
+                    value={this.state.username}
                     onChangeText={(username) => this.setState({username})}
                 />
                 <TextInput
@@ -76,6 +79,7 @@ class Initial extends React.Component {
                     style={commonStyles.input}
                     textContentType={'password'}
                     secureTextEntry={true}
+                    value={this.state.password}
                     onChangeText={(password) => this.setState({password})}
                 />
                 <Text style={commonStyles.error}>{this.state.errorText}</Text>
@@ -90,19 +94,19 @@ class Initial extends React.Component {
     };
 
     onButtonTap = () => {
-        this.props.navigation.navigate('List');
-        // return this.authorize()
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         if (!responseJson.message) {
-        //             this.props.navigation.navigate('List');
-        //         } else {
-        //             this.setState({errorText: responseJson.message});
-        //         }
-        //     })
-        //     .catch(() => {
-        //         this.toggleModal(true);
-        //     })
+        // this.props.navigation.navigate('List');
+        return this.authorize()
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (!responseJson.message) {
+                    this.props.navigation.navigate('List');
+                } else {
+                    this.setState({errorText: responseJson.message});
+                }
+            })
+            .catch(() => {
+                this.toggleModal(true);
+            })
     };
 
     authorize = () => {

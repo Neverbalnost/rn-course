@@ -9,7 +9,7 @@ class Item extends React.Component {
         title: navigation.state.params.title,
         headerLeft: (
             <TouchableOpacity
-                style={itemStyles.backButtonIcon}
+                style={commonStyles.backButtonIcon}
                 onPress={() => navigation.navigate('List')}>
                 <Icon name={'chevron-circle-left'} size={30} color={'#008ACE'}/>
             </TouchableOpacity>
