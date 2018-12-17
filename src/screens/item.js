@@ -19,14 +19,17 @@ class Item extends React.Component {
         const { navigation } = this.props;
         const item  = navigation.getParam('item');
         const {navigate} = navigation;
+        console.log(item);
         return (
             <View style={itemStyles.itemView}>
                 <View style={itemStyles.header}>
-                    <Icon style={itemStyles.icon} name={item.icon} size={60} color="#008ACE"/>
+                    <TouchableOpacity onPress={() => navigate('Map', { item, title: item.name })}>
+                        <Icon style={itemStyles.icon} name={'map'} size={60} color="#008ACE"/>
+                    </TouchableOpacity>
                     <Text style={[commonStyles.text, commonStyles.h1]}>{item.name}</Text>
                 </View>
                 <View style={itemStyles.paragraph}>
-                    <Text style={[commonStyles.text, itemStyles.text]}>{item.text}</Text>
+                    <Text style={[commonStyles.text, itemStyles.text]}>Price: ${item.price}</Text>
                 </View>
                 <View style={itemStyles.footer}>
                     <TouchableOpacity
