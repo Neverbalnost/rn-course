@@ -10,6 +10,7 @@ export default commonStyles = StyleSheet.create({
     commonView: {
         backgroundColor: '#fff',
         paddingHorizontal: 10,
+        marginHorizontal: 10,
         marginBottom: 20
     },
     centeredView: {
@@ -70,5 +71,14 @@ export default commonStyles = StyleSheet.create({
     },
     backButtonIcon: {
         marginLeft: 20
+    },
+    inlineContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignContent: 'flex-start',
+        marginTop: 10
+    },
+    icon: {
+        marginRight: 10
     }
 });
