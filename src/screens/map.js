@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Linking, ScrollView } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import mapStyles from '../styles/screens/listStyles';
@@ -27,19 +27,29 @@ class Map extends React.Component {
         const item  = this.props.navigation.getParam('item');
 
         return (
-            <View style={mapStyles.container}>
-              <MapView
-                provider={PROVIDER_GOOGLE}
-                style={mapStyles.map}
-                region={{
-                  latitude: 37.78825,
-                  longitude: -122.4324,
-                  latitudeDelta: 0.015,
-                  longitudeDelta: 0.0121,
-                }}
-              >
-              </MapView>
-            </View>
+            <ScrollView>
+                <View style={mapStyles.container}>
+                    <MapView
+                        provider={PROVIDER_GOOGLE}
+                        style={mapStyles.map}
+                        region={{
+                            latitude: 37.78825,
+                            longitude: -122.4324,
+                            latitudeDelta: 0.015,
+                            longitudeDelta: 0.0121,
+                        }}
+                    >
+                    </MapView>
+                </View>
+                <View style={commonStyles.commonView}>
+                    <TouchableOpacity
+                        style={commonStyles.inlineContainer}
+                        onPress={() => Linking.openURL(`tel:+79215602212`)}>
+                        <Icon style={commonStyles.icon} name={'phone'} size={40} color={'#008ACE'}/>
+                        <Text style={[commonStyles.text, commonStyles.h2]}>Call us</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         );
     }
 }
