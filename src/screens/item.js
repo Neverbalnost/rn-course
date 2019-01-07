@@ -19,7 +19,6 @@ class Item extends React.Component {
         const { navigation } = this.props;
         const item  = navigation.getParam('item');
         const {navigate} = navigation;
-        console.log(item);
         return (
             <View style={itemStyles.itemView}>
                 <View style={itemStyles.header}>
