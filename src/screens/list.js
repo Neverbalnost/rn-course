@@ -24,7 +24,7 @@ class List extends React.Component {
             limit: 10,
             pageNum: 1,
             listData: [],
-            loading: true
+            loading: false
         };
     }
     componentWillMount() {
@@ -32,6 +32,7 @@ class List extends React.Component {
     }
     render() {
         return (
+            this.state.listData &&
             <View>
                 <FlatList
                     style={commonStyles.commonView}
@@ -40,8 +41,14 @@ class List extends React.Component {
                     keyExtractor={this.keyExtractor}
                     onEndReached={this.onListEnd}
                     onEndReachedThreshold={0.1}
-                    onRefresh={this.onRefresh}
-                    refreshing={this.state.refreshing}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                        colors={['#D35D47', '#008ACE']}
+                        progressViewOffset={60}
+                      />
+                    }
                     ListHeaderComponent={this.listHeader}
                     ListFooterComponent={this.listFooter}
                 />
@@ -79,29 +86,32 @@ class List extends React.Component {
     };
     onRefresh = () => {
         const { limit } = this.state;
-        this.setState({pageNum: 1});
+        this.setState({pageNum: 1, refreshing: true});
         this.fetchData(limit, 1)
             .then((responseJson) => {
-                this.setState({loading: false});
+                this.setState({refreshing: false});
                 this.setState({listData: responseJson.items});
                 this.setState({numPages: Math.ceil(responseJson.total_count / limit)});
             });
     };
     onListEnd = () => {
+        this.setState({loading: true});
         const { limit, pageNum, listData, numPages } = this.state;
-        if (numPages == pageNum) return;
+        if (numPages == pageNum) {
+            this.setState({loading: false});
+            return
+        };
         this.fetchData(limit, pageNum + 1)
             .then((responseJson) => {
                 const list = listData.concat(responseJson.items);
-                this.setState({loading: false});
                 this.setState({listData: list});
                 this.setState({pageNum: pageNum + 1});
+                this.setState({loading: false});
             });
 
     };
     keyExtractor = (item, index) => item.id.toString();
     fetchData = (limit, pageNum) => {
-        this.setState({loading: true});
         return (
             fetch(`http://ecsc00a02fb3.epam.com/rest/V1/products?searchCriteria[pageSize]=${limit}&searchCriteria[currentPage]=${pageNum}`)
             .then((response) => response.json())
