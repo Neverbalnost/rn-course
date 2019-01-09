@@ -5,12 +5,14 @@ import {
     View,
     ScrollView,
     Animated,
-    Easing
+    Dimensions
     } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LottieView from 'lottie-react-native';
 import commonStyles from '../styles/commonStyles';
 import itemStyles from '../styles/screens/itemStyles';
+
+const window = Dimensions.get('window');
 
 class Item extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -28,13 +30,12 @@ class Item extends React.Component {
         this.state = {
             maxPanelHeight: 200,
             minPanelHeight: 0,
-            panelScrollDist: 200,
+            panelScrollDist: 50,
             scrollY: new Animated.Value(0),
         }
     }
     componentDidMount() {
         this.arrow.play(40, 50);
-
     }
     render() {
         const { maxPanelHeight, minPanelHeight, panelScrollDist } = this.state;
@@ -53,7 +54,7 @@ class Item extends React.Component {
                   [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
                 )}
             >
-                <View style={itemStyles.itemView}>
+                <View  style={[itemStyles.itemView, { height: window.height - this.state.panelScrollDist }]}>
                     <View style={itemStyles.header}>
                         <TouchableOpacity onPress={() => navigate('Map', { item, title: item.name })}>
                             <Icon style={itemStyles.icon} name={'map'} size={60} color="#008ACE"/>
@@ -72,9 +73,10 @@ class Item extends React.Component {
                             this.arrow = arrow;
                         }}
                         loop={false}
+                        progress={this.state.scrollY}
                         source={require('../assets/animation/arrow.json')}
                     />
-                </View>
+                </View >
                 <Animated.View style={[itemStyles.moreInfo, {height: panelHeight}]}>
                     <Text style={itemStyles.moreInfoText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                     Cras sagittis placerat risus, non tristique tortor ullamcorper eu.

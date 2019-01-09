@@ -20,6 +20,7 @@ export default listStyles = StyleSheet.create({
         paddingVertical: 20,
         borderTopColor: '#eee',
         borderBottomColor: '#eee',
+        overflow: 'hidden',
     },
     text: {
         fontSize: 30
