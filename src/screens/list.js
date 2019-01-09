@@ -77,28 +77,29 @@ class List extends React.Component {
         });
         let transformStyle = { transform: [{ rotate: rotation }] };
         return (
-            <View style={listStyles.item}>
-                <Icon style={listStyles.icon} name={item.icon} size={30} color="#008ACE"/>
-                <Text style={commonStyles.text}>{item.name}</Text>
+            <View>
                 <TouchableOpacity
-                    style={listStyles.link}
+                    style={listStyles.item}
+                    activeOpacity={1}
                     onPress={() => this.onPressItem({item})}
                     onPressIn={() => {
                         Animated.timing(rotateValue, {
                             toValue: 1,
-                            duration: 150,
+                            duration: 250,
                             easing: Easing.linear()
                         }).start();
                     }}
                     onPressOut={() => {
                         Animated.timing(rotateValue, {
                             toValue: 0,
-                            duration: 150,
+                            duration: 250,
                             easing: Easing.linear()
                         }).start();
                     }}
                 >
-                    <Animated.View style={transformStyle}>
+                    <Icon style={listStyles.icon} name={item.icon} size={30} color="#008ACE"/>
+                    <Text style={commonStyles.text}>{item.name}</Text>
+                    <Animated.View style={[transformStyle, listStyles.link]}>
                         <Icon name='chevron-circle-right' size={30} color="#333"/>
                     </Animated.View>
                 </TouchableOpacity>
