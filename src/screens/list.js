@@ -1,12 +1,12 @@
 import React from 'react';
 import {
+    Animated,
+    Easing,
     FlatList,
-    ScrollView,
     Text,
     TouchableOpacity,
     View,
-    RefreshControl,
-    Platform
+    RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../styles/commonStyles';
@@ -70,12 +70,37 @@ class List extends React.Component {
         )
     }
     renderItem = ({item}) => {
+        const rotateValue = new Animated.Value(0);
+        const rotation = rotateValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ["0deg", "360deg"]
+        });
+        let transformStyle = { transform: [{ rotate: rotation }] };
         return (
             <View style={listStyles.item}>
                 <Icon style={listStyles.icon} name={item.icon} size={30} color="#008ACE"/>
                 <Text style={commonStyles.text}>{item.name}</Text>
-                <TouchableOpacity style={listStyles.link} onPress={() => this.onPressItem({item})}>
-                    <Icon name='chevron-circle-right' size={30} color="#333"/>
+                <TouchableOpacity
+                    style={listStyles.link}
+                    onPress={() => this.onPressItem({item})}
+                    onPressIn={() => {
+                        Animated.timing(rotateValue, {
+                            toValue: 1,
+                            duration: 150,
+                            easing: Easing.linear()
+                        }).start();
+                    }}
+                    onPressOut={() => {
+                        Animated.timing(rotateValue, {
+                            toValue: 0,
+                            duration: 150,
+                            easing: Easing.linear()
+                        }).start();
+                    }}
+                >
+                    <Animated.View style={transformStyle}>
+                        <Icon name='chevron-circle-right' size={30} color="#333"/>
+                    </Animated.View>
                 </TouchableOpacity>
             </View>
         )
