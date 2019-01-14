@@ -2,9 +2,8 @@ import { StyleSheet } from 'react-native';
 
 export default mapStyles = StyleSheet.create({
     container: {
-      ...StyleSheet.absoluteFillObject,
       height: 400,
-      width: 400,
+      width: '100%',
       justifyContent: 'flex-end',
       alignItems: 'center',
     },
