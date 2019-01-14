@@ -3,20 +3,23 @@ import {
     Animated,
     Easing,
     FlatList,
+    Platform,
+    RefreshControl,
     Text,
     TouchableOpacity,
     View,
-    RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../styles/commonStyles';
 import listStyles from '../styles/screens/listStyles';
 import LottieView from 'lottie-react-native';
 
+const AnimatedList = Animated.createAnimatedComponent(FlatList);
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 60 : 73;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
 class List extends React.Component {
-    static navigationOptions = {
-        title: 'List of stuff',
-    };
     constructor(props) {
         super(props);
         this.state = {
@@ -24,38 +27,118 @@ class List extends React.Component {
             limit: 10,
             pageNum: 1,
             listData: [],
-            loading: false
+            loading: false,
+            scrollY: new Animated.Value(
+                Platform.OS === 'ios' ? -HEADER_MAX_HEIGHT : 0,
+            ),
         };
     }
     componentWillMount() {
         this.onRefresh();
     }
     render() {
+        const scrollY = Animated.add(
+            this.state.scrollY,
+            Platform.OS === 'ios' ? HEADER_MAX_HEIGHT : 0,
+        );
+        const headerTranslate = scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, -HEADER_SCROLL_DISTANCE],
+            extrapolate: 'clamp',
+        });
+
+        const imageOpacity = scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 1, 0],
+            extrapolate: 'clamp',
+        });
+        const imageTranslate = scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, 100],
+            extrapolate: 'clamp',
+        });
+
+        const titleScale = scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 1, 0.8],
+            extrapolate: 'clamp',
+        });
+        const titleTranslate = scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, 0, -8],
+            extrapolate: 'clamp',
+        });
         return (
             this.state.listData &&
-            <View>
-                <FlatList
-                    style={commonStyles.commonView}
+            <View style={listStyles.fill}>
+                <AnimatedList
+                    style={[commonStyles.commonView]}
+                    scrollEventThrottle={1}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+                        { useNativeDriver: true },
+                    )}
                     data={this.state.listData}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     onEndReached={this.onListEnd}
                     onEndReachedThreshold={0.1}
                     refreshControl={
-                      <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh}
-                        colors={['#D35D47', '#008ACE']}
-                        progressViewOffset={60}
-                      />
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={() => {
+                                this.setState({ refreshing: true });
+                                setTimeout(() => this.setState({ refreshing: false }), 1000);
+                            }}
+                            // Android offset for RefreshControl
+                            progressViewOffset={HEADER_MAX_HEIGHT}
+                        />
                     }
+                    // iOS offset for RefreshControl
+                    contentInset={{
+                        top: HEADER_MAX_HEIGHT,
+                    }}
+                    contentOffset={{
+                        y: -HEADER_MAX_HEIGHT,
+                    }}
                     ListHeaderComponent={this.listHeader}
                     ListFooterComponent={this.listFooter}
                 />
+                <Animated.View
+                    pointerEvents="none"
+                    style={[
+                        listStyles.header,
+                        { transform: [{ translateY: headerTranslate }] },
+                    ]}
+                >
+                    <Animated.Image
+                        style={[
+                            listStyles.backgroundImage,
+                            {
+                                opacity: imageOpacity,
+                                transform: [{ translateY: imageTranslate }],
+                            },
+                        ]}
+                        source={require('../assets/images/fox_bg.jpg')}
+                    />
+                </Animated.View>
+                <Animated.View
+                    style={[
+                        listStyles.bar,
+                        {
+                            transform: [
+                                { scale: titleScale },
+                                { translateY: titleTranslate },
+                            ],
+                        },
+                    ]}
+                >
+                    <Text style={[commonStyles.h1, listStyles.title]}>List of stuff</Text>
+                </Animated.View>
             </View>
-        );
-    };
-    listHeader = () => <Text style={[commonStyles.text, commonStyles.h1]}>The stuff</Text>
+        )
+    }
+    listHeader = () => <View style={listStyles.scrollViewContent}/>
     listFooter = () => {
         return (
             this.state.loading &&

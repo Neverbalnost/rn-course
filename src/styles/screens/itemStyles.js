@@ -18,8 +18,6 @@ export default listStyles = StyleSheet.create({
         marginHorizontal: 20,
         marginVertical: 20,
         paddingVertical: 20,
-        borderTopColor: '#eee',
-        borderBottomColor: '#eee',
         overflow: 'hidden',
     },
     text: {

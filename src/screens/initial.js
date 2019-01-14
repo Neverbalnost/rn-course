@@ -133,7 +133,7 @@ class Initial extends React.Component {
             case 'password':
                 this.setState({password: value});
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-                this.state.password.length < 4 ? this.setState({passError: 'C\'mon! Is it even a the password?'}) : this.setState({passError: ''});
+                this.state.password.length < 4 ? this.setState({passError: 'C\'mon! Is it even a password?'}) : this.setState({passError: ''});
                 break;
         }
     }
