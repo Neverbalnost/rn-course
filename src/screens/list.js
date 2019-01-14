@@ -27,7 +27,7 @@ class List extends React.Component {
             limit: 10,
             pageNum: 1,
             listData: [],
-            loading: false,
+            loading: true,
             scrollY: new Animated.Value(
                 Platform.OS === 'ios' ? -HEADER_MAX_HEIGHT : 0,
             ),
@@ -85,11 +85,7 @@ class List extends React.Component {
                     onEndReachedThreshold={0.1}
                     refreshControl={
                         <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={() => {
-                                this.setState({ refreshing: true });
-                                setTimeout(() => this.setState({ refreshing: false }), 1000);
-                            }}
+                            refreshing={false}
                             // Android offset for RefreshControl
                             progressViewOffset={HEADER_MAX_HEIGHT}
                         />
@@ -195,10 +191,9 @@ class List extends React.Component {
     };
     onRefresh = () => {
         const { limit } = this.state;
-        this.setState({pageNum: 1, refreshing: true});
+        this.setState({pageNum: 1});
         this.fetchData(limit, 1)
             .then((responseJson) => {
-                this.setState({refreshing: false});
                 this.setState({listData: responseJson.items});
                 this.setState({numPages: Math.ceil(responseJson.total_count / limit)});
             });
