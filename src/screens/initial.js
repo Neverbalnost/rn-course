@@ -3,17 +3,20 @@ import {
     Image,
     ScrollView,
     Text,
-    TextInput,
+    AsyncStorage,
     TouchableOpacity,
     Modal,
     Platform,
     UIManager,
     LayoutAnimation,
-    View
+    View,
+    Vibration
 } from 'react-native';
 import commonStyles from '../styles/commonStyles';
 import LottieView from 'lottie-react-native';
 import FormInput from '../partials/formInput';
+
+let vibrationPattern = [0, 500];
 
 class Initial extends React.Component {
     static navigationOptions = {
@@ -25,15 +28,17 @@ class Initial extends React.Component {
         this.state = {
             errorText: '',
             modalVisible: false,
-            username: 'elena_kogodeeva@epam.com',
-            password: 'PinkUnicorn99',
             usernameError: '',
             passError: ''
         };
-
         if (Platform.OS === 'android') {
             UIManager.setLayoutAnimationEnabledExperimental(true)
+            vibrationPattern = [500, 500, 500]
         }
+    }
+
+    componentDidMount() {
+        AsyncStorage.getItem('token').then(() => this.props.navigation.navigate('List'))
     }
 
     render() {
@@ -103,6 +108,10 @@ class Initial extends React.Component {
         );
     };
 
+    saveToken = (token) => {
+        AsyncStorage.setItem({ token })
+    }
+
     onButtonTap = () => {
         // this.props.navigation.navigate('List');
         if (!this.state.passError && !this.state.usernameError) {
@@ -110,6 +119,7 @@ class Initial extends React.Component {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     if (!responseJson.message) {
+                        this.saveToken(responseJson);
                         this.props.navigation.navigate('List');
                     } else {
                         LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -133,7 +143,7 @@ class Initial extends React.Component {
             case 'password':
                 this.setState({password: value});
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-                this.state.password.length < 4 ? this.setState({passError: 'C\'mon! Is it even a password?'}) : this.setState({passError: ''});
+                this.state.password && this.state.password.length < 3 ? this.setState({passError: 'C\'mon! Is it even a password?'}) : this.setState({passError: ''});
                 break;
         }
     }
@@ -155,6 +165,7 @@ class Initial extends React.Component {
     };
 
     toggleModal = (value) => {
+        if (value) Vibration.vibrate(vibrationPattern);
         this.setState({modalVisible: value});
     }
 }
