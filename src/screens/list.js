@@ -8,16 +8,19 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Vibration
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../styles/commonStyles';
 import listStyles from '../styles/screens/listStyles';
 import LottieView from 'lottie-react-native';
+import ErrorModal from '../partials/errorModal';
 
 const AnimatedList = Animated.createAnimatedComponent(FlatList);
 const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 60 : 73;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+let vibrationPattern = [0, 500];
 
 class List extends React.Component {
     constructor(props) {
@@ -31,7 +34,11 @@ class List extends React.Component {
             scrollY: new Animated.Value(
                 Platform.OS === 'ios' ? -HEADER_MAX_HEIGHT : 0,
             ),
+            modalVisible: false
         };
+        if (Platform.OS === 'android') {
+            vibrationPattern = [500, 500, 500]
+        }
     }
     componentWillMount() {
         this.onRefresh();
@@ -71,6 +78,10 @@ class List extends React.Component {
         return (
             this.state.listData &&
             <View style={listStyles.fill}>
+                <ErrorModal
+                  visible={this.state.modalVisible}
+                  onRequestClose={() => {this.toggleModal(false)}}
+                  onButtonTap={this.fetchAgain}/>
                 <AnimatedList
                     style={[commonStyles.commonView]}
                     scrollEventThrottle={1}
@@ -219,7 +230,18 @@ class List extends React.Component {
         return (
             fetch(`http://ecsc00a02fb3.epam.com/rest/V1/products?searchCriteria[pageSize]=${limit}&searchCriteria[currentPage]=${pageNum}`)
             .then((response) => response.json())
+            .catch(() => {
+                this.toggleModal(true);
+            })
         )
+    }
+    toggleModal = (value) => {
+        if (value) Vibration.vibrate(vibrationPattern);
+        this.setState({modalVisible: value});
+    }
+    fetchAgain = () => {
+        this.toggleModal(false);
+        this.onRefresh();
     }
 }
 
