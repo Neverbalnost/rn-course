@@ -5,16 +5,16 @@ import {
     Text,
     AsyncStorage,
     TouchableOpacity,
-    Modal,
     Platform,
     UIManager,
     LayoutAnimation,
     View,
-    Vibration
+    Vibration,
+    NetInfo
 } from 'react-native';
 import commonStyles from '../styles/commonStyles';
-import LottieView from 'lottie-react-native';
 import FormInput from '../partials/formInput';
+import ErrorModal from '../partials/errorModal';
 
 let vibrationPattern = [0, 500];
 
@@ -29,12 +29,22 @@ class Initial extends React.Component {
             errorText: '',
             modalVisible: false,
             usernameError: '',
-            passError: ''
+            passError: '',
+            modalMessage: ''
         };
         if (Platform.OS === 'android') {
             UIManager.setLayoutAnimationEnabledExperimental(true)
             vibrationPattern = [500, 500, 500]
         }
+    }
+    componentWillMount() {
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log(connectionInfo);
+            if (connectionInfo.type == 'none') {
+                this.setState({modalMessage: 'Consider turning some Wi-Fi or mobile Internet on!'})
+                this.toggleModal(true);
+            }
+        });
     }
 
     componentDidMount() {
@@ -44,38 +54,11 @@ class Initial extends React.Component {
     render() {
         return (
             <ScrollView style={commonStyles.commonView}>
-                <Modal
-                  animationType="fade"
-                  transparent={false}
+                <ErrorModal
                   visible={this.state.modalVisible}
-                  onRequestClose={() => {this.toggleModal(false)}}>
-                  <View style={commonStyles.centeredView}>
-                    <View style={commonStyles.centeredView}>
-                        <Text style={[commonStyles.text, commonStyles.h1]}>Oh no!</Text>
-                        <Text style={[commonStyles.text, commonStyles.h2, commonStyles.textGray]}>Seems that you have some connection issues!</Text>
-                        <LottieView
-                            style={commonStyles.animationContainer}
-                            source={require('../assets/animation/disconnected.json')}
-                            autoPlay
-                            loop
-                        />
-                        <View style={commonStyles.buttonContainer}>
-                            <TouchableOpacity
-                                style={commonStyles.button}
-                                onPress={this.onButtonTap}>
-                                <Text style={[commonStyles.text, commonStyles.buttonText]}>Try again</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[commonStyles.button, commonStyles.buttonRed]}
-                                onPress={() => {
-                                    this.toggleModal(false);
-                                }}>
-                                <Text style={[commonStyles.text, commonStyles.buttonText]}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                  </View>
-                </Modal>
+                  onRequestClose={() => {this.toggleModal(false)}}
+                  message={this.state.modalMessage}
+                  onButtonTap={this.onButtonTap}/>
                 <Image
                     style={commonStyles.logo}
                     resizeMode='contain'
@@ -114,6 +97,7 @@ class Initial extends React.Component {
 
     onButtonTap = () => {
         // this.props.navigation.navigate('List');
+        this.toggleModal(false);
         if (!this.state.passError && !this.state.usernameError) {
             return this.authorize()
                 .then((response) => response.json())
