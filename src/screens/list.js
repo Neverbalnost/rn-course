@@ -15,6 +15,7 @@ import listStyles from '../styles/screens/listStyles';
 import LottieView from 'lottie-react-native';
 
 const AnimatedList = Animated.createAnimatedComponent(FlatList);
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 60 : 73;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -68,6 +69,7 @@ class List extends React.Component {
             outputRange: [0, 0, -8],
             extrapolate: 'clamp',
         });
+        Animated.parallel([headerTranslate, imageOpacity, imageTranslate, titleScale, titleTranslate]);
         return (
             this.state.listData &&
             <View style={listStyles.fill}>
@@ -150,11 +152,17 @@ class List extends React.Component {
     }
     renderItem = ({item}) => {
         const rotateValue = new Animated.Value(0);
+        const colorValue = new Animated.Value(0);
         const rotation = rotateValue.interpolate({
             inputRange: [0, 1],
             outputRange: ["0deg", "360deg"]
         });
-        let transformStyle = { transform: [{ rotate: rotation }] };
+        const iconColor = colorValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ["rgb(0, 3, 51)", "rgb(0, 138, 206)"]
+        });
+        let rotationStyle = { transform: [{ rotate: rotation }] };
+        let colorStyle = {color: iconColor};
         return (
             <View>
                 <TouchableOpacity
@@ -162,24 +170,38 @@ class List extends React.Component {
                     activeOpacity={1}
                     onPress={() => this.onPressItem({item})}
                     onPressIn={() => {
-                        Animated.timing(rotateValue, {
-                            toValue: 1,
-                            duration: 250,
-                            easing: Easing.linear()
-                        }).start();
+                        Animated.parallel([
+                            Animated.timing(rotateValue, {
+                                toValue: 1,
+                                duration: 250,
+                                easing: Easing.linear()
+                            }).start(),
+                            Animated.timing(colorValue, {
+                                toValue: 1,
+                                duration: 250,
+                                easing: Easing.linear()
+                            }).start(),
+                        ])
                     }}
                     onPressOut={() => {
-                        Animated.timing(rotateValue, {
-                            toValue: 0,
-                            duration: 250,
-                            easing: Easing.linear()
-                        }).start();
+                        Animated.parallel([
+                            Animated.timing(rotateValue, {
+                                toValue: 0,
+                                duration: 250,
+                                easing: Easing.linear()
+                            }).start(),
+                            Animated.timing(colorValue, {
+                                toValue: 0,
+                                duration: 250,
+                                easing: Easing.linear()
+                            }).start(),
+                        ])
                     }}
                 >
                     <Icon style={listStyles.icon} name={item.icon} size={30} color="#008ACE"/>
                     <Text style={commonStyles.text}>{item.name}</Text>
-                    <Animated.View style={[transformStyle, listStyles.link]}>
-                        <Icon name='chevron-circle-right' size={30} color="#333"/>
+                    <Animated.View style={[rotationStyle, listStyles.link]}>
+                        <AnimatedIcon style={colorStyle} name='chevron-circle-right' size={30}/>
                     </Animated.View>
                 </TouchableOpacity>
             </View>
