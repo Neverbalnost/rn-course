@@ -39,7 +39,6 @@ class Initial extends React.Component {
     }
     componentWillMount() {
         NetInfo.getConnectionInfo().then((connectionInfo) => {
-            console.log(connectionInfo);
             if (connectionInfo.type == 'none') {
                 this.setState({modalMessage: 'Consider turning some Wi-Fi or mobile Internet on!'})
                 this.toggleModal(true);
