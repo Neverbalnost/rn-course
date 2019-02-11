@@ -8,7 +8,6 @@ import {
     Platform,
     UIManager,
     LayoutAnimation,
-    View,
     Vibration,
     NetInfo
 } from 'react-native';
@@ -47,7 +46,7 @@ class Initial extends React.Component {
     }
 
     componentDidMount() {
-        AsyncStorage.getItem('token').then(() => this.props.navigation.navigate('List'))
+        AsyncStorage.getItem('token').then((token) => {if (token) {this.props.navigation.navigate('List')}})
     }
 
     render() {
@@ -91,11 +90,10 @@ class Initial extends React.Component {
     };
 
     saveToken = (token) => {
-        AsyncStorage.setItem({ token })
+        AsyncStorage.setItem('token', token)
     }
 
     onButtonTap = () => {
-        // this.props.navigation.navigate('List');
         this.toggleModal(false);
         if (!this.state.passError && !this.state.usernameError) {
             return this.authorize()
