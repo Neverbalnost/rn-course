@@ -14,6 +14,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LottieView from 'lottie-react-native';
 import commonStyles from '../styles/commonStyles';
 import itemStyles from '../styles/screens/itemStyles';
+import {
+    Sentry,
+    SentrySeverity
+} from 'react-native-sentry';
 
 const window = Dimensions.get('window');
 const Notifications = NativeModules.Notifications;
@@ -78,6 +82,10 @@ class Item extends React.Component {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     if (responseJson.message) {
+                        Sentry.captureException(new Error(`Cart Error ${responseJson.message}`), {
+                            logger: 'Item',
+                            level: SentrySeverity.Error
+                        });
                         this.showNotification(
                             'Damn!',
                             `${responseJson.message}`
@@ -85,7 +93,11 @@ class Item extends React.Component {
                     }
                     this.setState({cartNum: responseJson});
                 })
-                .catch(() => {
+                .catch((e) => {
+                    Sentry.captureException(new Error(`Cart Error ${e.name} ${e.message}`), {
+                        logger: 'Item',
+                        level: SentrySeverity.Fatal
+                    });
                     this.showNotification(
                         'Oops!',
                         `Cart is not created and we don't know why!`
@@ -95,7 +107,6 @@ class Item extends React.Component {
     };
     addItemToCart = () => {
         const item  = this.props.navigation.getParam('item');
-        console.log('this.token', this.token, '\n this.state.cartNum: ', this.state.cartNum);
         return (
             fetch('http://ecsc00a02fb3.epam.com/index.php/rest/default/V1/carts/mine/items', {
                 method: 'POST',
@@ -114,8 +125,11 @@ class Item extends React.Component {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log('responseJson: ', responseJson);
                     if (responseJson.message) {
+                        Sentry.captureException(new Error(`Cart Error ${responseJson.message}`), {
+                            logger: 'Item',
+                            level: SentrySeverity.Error
+                        });
                         this.showNotification(
                             'Oops!',
                             `Cart is not created because ${responseJson.message}`
@@ -128,7 +142,11 @@ class Item extends React.Component {
                         )
                     }
                 })
-                .catch(() => {
+                .catch((e) => {
+                    Sentry.captureException(new Error(`Cart Error ${e.name} ${e.message}`), {
+                        logger: 'Item',
+                        level: SentrySeverity.Fatal
+                    });
                     this.showNotification(
                         'Oops!',
                         `Cart is not created and we don't know why!`

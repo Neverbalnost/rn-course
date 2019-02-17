@@ -12,6 +12,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.shell.MainReactPackage
 import com.facebook.soloader.SoLoader
 import com.notifications.NotificationsPackage
+import io.sentry.RNSentryPackage
 
 import java.util.Arrays
 
@@ -25,6 +26,7 @@ class MainApplication : Application(), ReactApplication {
         override fun getPackages(): List<ReactPackage> {
             return Arrays.asList(
                     MainReactPackage(),
+                    RNSentryPackage(),
                     NotificationsPackage(),
                     VectorIconsPackage(),
                     MapsPackage(),

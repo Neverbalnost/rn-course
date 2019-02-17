@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 import com.android.build.OutputFile
 
@@ -78,6 +79,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -138,6 +140,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-sentry')
     implementation 'com.android.support:design:27.1.0'
     implementation(project(':react-native-maps')){
         exclude group: 'com.google.android.gms', module: 'play-services-base'

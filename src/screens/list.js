@@ -15,6 +15,10 @@ import commonStyles from '../styles/commonStyles';
 import listStyles from '../styles/screens/listStyles';
 import LottieView from 'lottie-react-native';
 import ErrorModal from '../partials/errorModal';
+import {
+    Sentry,
+    SentrySeverity
+} from 'react-native-sentry';
 
 const AnimatedList = Animated.createAnimatedComponent(FlatList);
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
@@ -252,7 +256,11 @@ class List extends React.Component {
         return (
             fetch(`http://ecsc00a02fb3.epam.com/rest/V1/products?searchCriteria[pageSize]=${limit}&searchCriteria[currentPage]=${pageNum}`)
             .then((response) => response.json())
-            .catch(() => {
+            .catch((e) => {
+                Sentry.captureException(new Error(`Cart Error ${e.name} ${e.message}`), {
+                    logger: 'List',
+                    level: SentrySeverity.Error
+                });
                 this.toggleModal(true);
             })
         )

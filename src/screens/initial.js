@@ -14,6 +14,11 @@ import {
 import commonStyles from '../styles/commonStyles';
 import FormInput from '../partials/formInput';
 import ErrorModal from '../partials/errorModal';
+import {
+    Sentry,
+    SentrySeverity,
+    SentryLog
+} from 'react-native-sentry';
 
 let vibrationPattern = [0, 500];
 
@@ -103,11 +108,19 @@ class Initial extends React.Component {
                         this.saveToken(responseJson);
                         this.props.navigation.navigate('List');
                     } else {
+                        Sentry.captureException(new Error(`Authorization Error ${responseJson.message}`), {
+                            logger: 'Initial',
+                            level: SentrySeverity.Info
+                        });
                         LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
                         this.setState({errorText: responseJson.message});
                     }
                 })
-                .catch(() => {
+                .catch((e) => {
+                    Sentry.captureException(new Error(`Authorization Error: ${e.name} ${e.message}`), {
+                        logger: 'Initial',
+                        level: SentrySeverity.Fatal
+                    });
                     this.toggleModal(true);
                 })
         }
